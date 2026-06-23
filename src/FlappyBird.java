@@ -23,9 +23,6 @@ public class FlappyBird extends JPanel
 
     private GameState gameState;
 
-    // 🆕 LEVEL SYSTEM
-    private int level = 1;
-
     public FlappyBird() {
 
         setPreferredSize(
@@ -108,14 +105,11 @@ public class FlappyBird extends JPanel
             pipe.draw(g);
         }
 
-        // 🆕 SCORE + LEVEL UI
         g.setColor(Color.RED);
         g.setFont(new Font("Arial", Font.BOLD, 30));
 
         g.drawString("Score: " + scoreManager.getScore(), 20, 40);
-        g.drawString("Level: " + level, 20, 80);
 
-        // GAME OVER TEXT
         if (gameState == GameState.GAME_OVER) {
 
             String text = "Game Over: " + scoreManager.getScore();
@@ -146,8 +140,6 @@ public class FlappyBird extends JPanel
 
                 scoreManager.increaseScore();
                 pipe.setPassed(true);
-
-                updateLevel(); // 🆕 LEVEL UPDATE HERE
             }
 
             if (CollisionDetector.isColliding(bird, pipe)) {
@@ -160,19 +152,6 @@ public class FlappyBird extends JPanel
         }
     }
 
-    // 🆕 LEVEL SYSTEM LOGIC
-    private void updateLevel() {
-
-        int score = scoreManager.getScore();
-
-        level = (score / 10) + 1; // every 10 score = new level
-
-        velocityX = -6 - (level - 1); // speed increase
-
-        int newDelay = Math.max(600, 1500 - (level * 150));
-        pipeTimer.setDelay(newDelay);
-    }
-
     private void restartGame() {
 
         bird.setY(GameSettings.BOARD_HEIGHT / 2);
@@ -181,10 +160,7 @@ public class FlappyBird extends JPanel
         pipeManager.clearPipes();
         scoreManager.reset();
 
-        level = 1; // reset level
         velocityX = -6;
-
-        pipeTimer.setDelay(1500);
 
         gameState = GameState.PLAYING;
 
